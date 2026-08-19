@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Breach Sector — Cyberattacks in Formula 1</title>
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#0a0c0e;
+    --carbon:#15181b;
+    --carbon-2:#1d2126;
+    --line:#2a2f34;
+    --steel:#7a8790;
+    --off-white:#eceeef;
+    --red:#e10600;
+    --amber:#ffb400;
+    --green-ok:#3ddc84;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--asphalt);
+    color:var(--off-white);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--red);color:#fff;}
+
+  a{color:inherit;}
+
+  .grid-overlay{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:0.25;
+    mask-image:linear-gradient(to bottom, black, transparent 85%);
+  }
+
+  header.hero{
+    position:relative;
+    z-index:1;
+    padding:9vh 6vw 10vh;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .scanline{
+    position:absolute; left:0; right:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--red), transparent);
+    top:0; opacity:0.9;
+    animation:scan 6s linear infinite;
+    box-shadow:0 0 12px var(--red);
+  }
+  @keyframes scan{
+    0%{top:0%;}
+    100%{top:100%;}
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem;
+    letter-spacing:0.18em;
+    color:var(--red);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px;height:8px;border-radius:50%;
+    background:var(--red);
+    box-shadow:0 0 8px var(--red);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;} 50%{opacity:0.25;}
+  }
+  h1{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:clamp(2.6rem, 6.4vw, 5.6rem);
+    line-height:0.98;
+    text-transform:uppercase;
+    letter-spacing:-0.01em;
+    margin:0 0 28px;
+    max-width:16ch;
+  }
+  h1 span{color:var(--red);}
+  .hero p.lede{
+    max-width:56ch;
+    font-size:1.08rem;
+    line-height:1.65;
+    color:var(--steel);
+  }
+  .hero-stats{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    margin-top:56px;
+    border-top:1px solid var(--line);
+  }
+  .stat{
+    flex:1 1 180px;
+    padding:20px 24px 0 0;
+    border-right:1px solid var(--line);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .n{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:2rem;
+    color:var(--amber);
+  }
+  .stat .l{
+    font-size:0.78rem;
+    color:var(--steel);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-top:4px;
+  }
+
+  main{position:relative; z-index:1;}
+
+  section.intro{
+    padding:8vh 6vw 4vh;
+    max-width:70ch;
+  }
+  section.intro h2{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:1.5rem;
+    letter-spacing:0.02em;
+    color:var(--off-white);
+    margin-bottom:14px;
+  }
+  section.intro p{
+    color:var(--steel);
+    line-height:1.75;
+    font-size:1rem;
+  }
+
+  section.timeline{
+    padding:6vh 6vw 12vh;
+    position:relative;
+  }
+  .timeline-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    border-bottom:1px solid var(--line);
+    padding-bottom:18px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .timeline-head h2{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:1.6rem;
+  }
+  .timeline-head .legend{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem;
+    color:var(--steel);
+    letter-spacing:0.06em;
+  }
+
+  .rail{
+    position:relative;
+    padding-left:78px;
+  }
+  .rail::before{
+    content:"";
+    position:absolute;
+    left:34px;
+    top:0; bottom:0;
+    width:1px;
+    background:linear-gradient(to bottom, var(--line), var(--line) 96%, transparent);
+  }
+
+  .entry{
+    position:relative;
+    padding:34px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .entry:last-child{border-bottom:none;}
+  .entry .yr{
+    position:absolute;
+    left:-78px;
+    top:34px;
+    width:60px;
+    text-align:right;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.92rem;
+    color:var(--steel);
+  }
+  .entry .node{
+    position:absolute;
+    left:-46px;
+    top:40px;
+    width:11px; height:11px;
+    border-radius:50%;
+    background:var(--asphalt);
+    border:2px solid var(--red);
+  }
+  .entry.sev-high .node{border-color:var(--red); box-shadow:0 0 10px rgba(225,6,0,0.55);}
+  .entry.sev-med .node{border-color:var(--amber);}
+  .entry.sev-low .node{border-color:var(--green-ok);}
+
+  .entry .tag-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.68rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:4px 9px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    color:var(--steel);
+  }
+  .tag.severity-high{color:var(--red); border-color:rgba(225,6,0,0.4);}
+  .tag.severity-med{color:var(--amber); border-color:rgba(255,180,0,0.4);}
+  .tag.severity-low{color:var(--green-ok); border-color:rgba(61,220,132,0.35);}
+
+  .entry h3{
+    font-family:'Oswald',sans-serif;
+    font-size:1.5rem;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    margin:0 0 12px;
+  }
+  .entry h3 .team{color:var(--red);}
+  .entry p{
+    color:var(--steel);
+    line-height:1.7;
+    max-width:66ch;
+    margin:0;
+    font-size:0.98rem;
+  }
+  .entry .meta{
+    margin-top:14px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.75rem;
+    color:#54606a;
+  }
+
+  footer{
+    padding:6vh 6vw 8vh;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  footer .fnote{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.75rem;
+    color:#3f4952;
+    max-width:60ch;
+    line-height:1.6;
+  }
+
+  @media (max-width:640px){
+    .rail{padding-left:56px;}
+    .entry .yr{left:-56px; width:44px; font-size:0.78rem;}
+    .entry .node{left:-30px;}
+    header.hero{padding:8vh 6vw 6vh;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-overlay"></div>
+
+<header class="hero">
+  <div class="scanline"></div>
+  <div class="eyebrow">SECURITY DESK / MOTORSPORT</div>
+  <h1>When the <span>paddock</span><br>gets breached</h1>
+  <p class="lede">Formula 1 runs on data — telemetry, aero models, strategy calls, sponsor logins, driver PII. That makes every team, and the FIA itself, a target. A recorded history of the sport's espionage cases, intrusions, and digital sabotage, sector by sector.</p>
+
+  <div class="hero-stats">
+    <div class="stat"><div class="n">10</div><div class="l">Documented incidents</div></div>
+    <div class="stat"><div class="n">18</div><div class="l">Years on record</div></div>
+    <div class="stat"><div class="n">6</div><div class="l">Teams &amp; bodies affected</div></div>
+    <div class="stat"><div class="n">$100M+</div><div class="l">Largest single penalty</div></div>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <h2>Not just a racing series</h2>
+    <p>F1's attack surface has grown alongside its technology stack: fan apps, AR launches, driver-data portals, sponsor infrastructure, and factory networks worth defending like any critical enterprise. Some of these cases are classic industrial espionage carried out on paper and USB drives. Others are modern intrusions — ransomware, phishing, and app compromises — aimed at teams and the FIA alike.</p>
+  </section>
+
+  <section class="timeline">
+    <div class="timeline-head">
+      <h2>Incident log</h2>
+      <div class="legend">SEVERITY — <span style="color:var(--red)">● HIGH</span> <span style="color:var(--amber)">● MED</span> <span style="color:var(--green-ok)">● LOW</span></div>
+    </div>
+
+    <div class="rail">
+
+      <div class="entry sev-high">
+        <div class="yr">2007</div>
+        <div class="node"></div>
+        <div class="tag-row"><span class="tag severity-high">Industrial espionage</span></div>
+        <h3><span class="team">McLaren / Ferrari</span> — "Spygate"</h3>
+        <p>McLaren's chief designer was found in possession of a dossier of more than 780 pages of confidential Ferrari technical documentation, obtained through a Ferrari employee. The FIA ruled McLaren had used the material, fining the team $100 million and stripping its constructors' championship points for the season — the largest penalty in the sport's history and still the reference case for what F1 espionage can cost.</p>
+        <div class="meta">SOURCE: FIA WORLD MOTOR SPORT COUNCIL RULING</div>
+      </div>
+
+      <div class="entry sev-med">
+        <div class="yr">2011</div>
+        <div class="node"></div>
+        <div class="tag-row"><span class="tag severity-med">Network intrusion</span></div>
+        <h3><span class="team">Renault F1 Team</span> — Data theft for resale</h3>
+        <p>Hackers gained access to confidential Renault technical and strategic files. The intrusion was traced to a group based in Eastern Europe reportedly attempting to sell the stolen material to rival constructors. No leak was confirmed, but the FIA used the case to push teams toward stronger network security.</p>
+        <div class="meta">SOURCE: FIA ADVISORY / MOTORSPORT SECURITY REPORTING</div>
+      </div>
+
+      <div class="entry sev-med">
+        <div class="yr">2015</div>
+        <div class="node"></div>
+        <div class="tag-row"><span class="tag severity-med">Insider data theft</span></div>
+        <h3><span class="team">Mercedes</span> — Departing-engineer copy case</h3>
+        <p>Mercedes took legal action against a former engineer accused of copying engine mileage, damage logs, and raw telemetry from the 2015 Hungarian Grand Prix before moving to Ferrari — a reminder that F1's biggest data-security risk is sometimes a badge, not a firewall.</p>
+        <div class="meta">SOURCE: CIVIL PROCEEDINGS, MERCEDES-AMG PETRONAS</div>
+      </div>
+
+      <div class="entry sev-low">
+        <div class="yr">2020</div>
+        <div class="node"></div>
+        <div class="tag-row"><span class="tag severity-low">Disputed design origin</span></div>
+        <h3><span class="team">Racing Point</span> — Brake-duct ruling</h3>
+        <p>The FIA found Racing Point's brake ducts to be a close copy of the previous year's championship-winning Mercedes design, fining the team $427,000 and docking 15 points. The governing body never confirmed a digital breach, but the case fuelled speculation about how closely a rival's design files had been accessed.</p>
+        <div class="meta">SOURCE: FIA STEWARDS' DECISION, 2020</div>
+      </div>
+
+      <div class="entry sev-high">
+        <div class="yr">MAR 2021</div>
+        <div class="node"></div>
+        <div class="tag-row"><span class="tag severity-high">App compromise</span></div>
+        <h3><span class="team">Williams Racing</span> — FW43B reveal hijacked</h3>
+        <p>Hours before Williams planned to unveil its 2021 car through an augmented-reality app, attackers compromised the app itself. Livery images leaked early and the launch was cancelled outright, with Williams pulling the app from both major stores. The team said its core in-house systems were untouched — the breach lived entirely in third-party app infrastructure.</p>
+        <div class="meta">SOURCE: WILLIAMS RACING STATEMENT, MAR 2021</div>
+      </div>
+
+      <div class="entry sev-med">
+        <div class="yr">JUL 2021</div>
+        <div class="node"></div>
+        <div class="tag-row"><span class="tag severity-med">Push-notification hijack</span></div>
+        <h3><span class="team">Official F1 App</span> — "I should check my security"</h3>
+        <p>Over 5 million users of the official F1 mobile app received two unauthorised push notifications — the first reading simply "foo," the second a taunting "Hmmmm, I should check my security.. :)". F1 confirmed its push-notification service had been compromised in a targeted attack, though no customer data was believed accessed.</p>
+        <div class="meta">SOURCE: F1 OFFICIAL STATEMENT, JUL 2021</div>
+      </div>
+
+      <div class="entry sev-high">
+        <div class="yr">2022</div>
+        <div class="node"></div>
+        <div class="tag-row"><span class="tag severity-high">Ransomware</span></div>
+        <h3><span class="team">Ferrari</span> — RansomEXX &amp; NFT scam</h3>
+        <p>A ransomware group calling itself RansomEXX claimed to have exfiltrated roughly 7 gigabytes of internal Ferrari documents and manuals, shortly after the team ended its cybersecurity partnership with Kaspersky. Months later a Ferrari brand subdomain was separately compromised and used to host a fraudulent NFT drop before being taken down.</p>
+        <div class="meta">SOURCE: THREAT-INTEL REPORTING, 2022</div>
+      </div>
+
+      <div class="entry sev-med">
+        <div class="yr">2024</div>
+        <div class="node"></div>
+        <div class="tag-row"><span class="tag severity-med">Phishing</span></div>
+        <h3><span class="team">FIA</span> — Staff email compromise</h3>
+        <p>The FIA disclosed that phishing attacks led to unauthorised access of two staff email accounts, exposing personal data. The governing body cut off access quickly and notified both French and Swiss data-protection regulators, describing it as part of a wider phishing campaign across the motorsport world rather than a targeted hit.</p>
+        <div class="meta">SOURCE: FIA PUBLIC DISCLOSURE, 2024</div>
+      </div>
+
+      <div class="entry sev-low">
+        <div class="yr">2024</div>
+        <div class="node"></div>
+        <div class="tag-row"><span class="tag severity-low">Fan-facing phishing</span></div>
+        <h3><span class="team">Belgian Grand Prix</span> — Spa ticket-voucher scam</h3>
+        <p>Attackers broke into the Belgian Grand Prix's official contact mailbox and used it to blast fans with a fake €50 ticket voucher, directing them to a spoofed portal built to harvest payment details. Organisers flagged the fraud within hours and filed a criminal complaint.</p>
+        <div class="meta">SOURCE: SPA GP INCIDENT STATEMENT, 2024</div>
+      </div>
+
+      <div class="entry sev-high">
+        <div class="yr">2025</div>
+        <div class="node"></div>
+        <div class="tag-row"><span class="tag severity-high">Data exposure</span></div>
+        <h3><span class="team">FIA Driver Portal</span> — Verstappen PII exposed</h3>
+        <p>Security researchers testing the FIA's driver-categorisation website found they could grant themselves administrator access, exposing passports, licences, résumés, and password hashes for the sport's drivers — including Max Verstappen. The researchers stopped once the scope became clear and disclosed responsibly; the FIA confirmed the breach and patched the site.</p>
+        <div class="meta">SOURCE: RESEARCHER DISCLOSURE, FIA CONFIRMATION, OCT 2025</div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="fnote">COMPILED FOR REFERENCE FROM PUBLIC REPORTING AND OFFICIAL STATEMENTS. SEVERITY RATINGS REFLECT SCOPE OF DATA OR COMPETITIVE IMPACT, NOT LEGAL FINDING.</div>
+  <div class="fnote">BREACH SECTOR // ARCHIVE BUILD 01</div>
+</footer>
+
+</body>
+</html>
